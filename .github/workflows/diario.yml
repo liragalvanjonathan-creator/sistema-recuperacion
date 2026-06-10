@@ -1,0 +1,25 @@
+name: Actualizar Datos
+on:
+  schedule:
+    - cron: '0 10 * * *' # Corre diario a las 4 AM hora México
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - name: Install dependencies
+        run: pip install requests pandas
+      - name: Run script
+        run: python actualizar_datos.py
+      - name: Commit and push
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          git add datos_operadores.csv
+          git commit -m "Actualizacion automatica" || exit 0
+          git push
